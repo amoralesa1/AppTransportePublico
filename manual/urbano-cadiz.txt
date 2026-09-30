@@ -10,25 +10,43 @@
 
 fuente | urbano-cadiz | Autobús urbano de Cádiz
 
-# ---- Paradas (línea 1) ----
-parada | cortadura       | Cortadura - Complejo Deportivo                 | 36°29'52.7"N | 6°16'19.2"W
-parada | telegrafia      | Telegrafía                                     | 36°30'01.2"N | 6°16'24.0"W
-parada | estadio         | Estadio                                        | 36°30'08.0"N | 6°16'28.1"W
-parada | balneario       | Balneario - Glorieta Ana Orantes               | 36°30'23.0"N | 6°16'36.8"W
-parada | residencia      | Residencia - Hospital Puerta del Mar           | 36°30'33.0"N | 6°16'42.5"W
-parada | san-jose        | San José                                       | 36°30'44.3"N | 6°16'49.0"W
-parada | san-felipe      | San Felipe                                     | 36°30'56.0"N | 6°16'55.6"W
-parada | plaza-asdrubal  | Plaza Asdrúbal - Mercado Virgen del Rosario    | 36°31'04.1"N | 6°17'00.1"W
-parada | comisaria       | Comisaría                                      | 36°31'15.5"N | 6°17'06.7"W
-parada | avda-andalucia  | Avenida Andalucía                              | 36°31'28.3"N | 6°17'13.9"W
-parada | puertas-tierra  | Puertas de Tierra                              | 36°31'37.8"N | 6°17'19.6"W
-parada | renfe           | Renfe - Cuesta de las Calesas                  | 36°31'45.4"N | 6°17'23.0"W
-parada | avda-puerto     | Avenida del Puerto                             | 36°31'54.4"N | 6°17'32.2"W
-parada | plaza-espana    | Plaza España                                   | 36°32'03.1"N | 6°17'34.6"W
+# ---- Paradas línea 1, sentido IDA (Cortadura -> Plaza España) ----
+parada | ida-complejo-deportivo | Complejo Deportivo                          | 36°29'52.7"N | 6°16'19.2"W
+parada | ida-telegrafia         | Telegrafía                                  | 36°30'01.2"N | 6°16'24.0"W
+parada | ida-estadio            | Estadio                                     | 36°30'08.0"N | 6°16'28.1"W
+parada | ida-balneario          | Balneario - Glorieta Ana Orantes            | 36°30'23.0"N | 6°16'36.8"W
+parada | ida-residencia         | Residencia - Hospital Puerta del Mar        | 36°30'33.0"N | 6°16'42.5"W
+parada | ida-san-jose           | San José                                    | 36°30'44.3"N | 6°16'49.0"W
+parada | ida-san-felipe         | San Felipe                                  | 36°30'56.0"N | 6°16'55.6"W
+parada | ida-plaza-asdrubal     | Plaza Asdrúbal - Mercado Virgen del Rosario | 36°31'04.1"N | 6°17'00.1"W
+parada | ida-comisaria          | Comisaría                                   | 36°31'15.5"N | 6°17'06.7"W
+parada | ida-avda-andalucia     | Avenida Andalucía                           | 36°31'28.3"N | 6°17'13.9"W
+parada | ida-puertas-tierra     | Puertas de Tierra                           | 36°31'37.8"N | 6°17'19.6"W
+parada | ida-renfe              | Renfe - Cuesta de las Calesas               | 36°31'45.4"N | 6°17'23.0"W
+parada | ida-avda-puerto        | Avenida del Puerto                          | 36°31'54.4"N | 6°17'32.2"W
+parada | ida-plaza-espana       | Plaza España                                | 36°32'03.1"N | 6°17'34.6"W
+
+# ---- Paradas línea 1, sentido VUELTA (Plaza España -> Cortadura) ----
+# Algunas coordenadas difieren ligeramente de las de ida porque la parada está al otro
+# lado de la calle; "Cortadura" y "Complejo Deportivo" son dos paradas distintas y consecutivas.
+parada | vta-plaza-espana       | Plaza España                                | 36°32'03.1"N | 6°17'34.6"W
+parada | vta-avda-puerto        | Avenida del Puerto - Edificio Trocadero     | 36°31'48.6"N | 6°17'27.3"W
+parada | vta-puertas-tierra     | Puertas de Tierra                           | 36°31'36.9"N | 6°17'20.7"W
+parada | vta-avda-andalucia     | Avenida Andalucía                           | 36°31'26.6"N | 6°17'13.6"W
+parada | vta-comisaria          | Comisaría                                   | 36°31'15.3"N | 6°17'07.2"W
+parada | vta-plaza-asdrubal     | Plaza Asdrúbal - Mercado Virgen del Rosario | 36°31'03.3"N | 6°17'00.5"W
+parada | vta-san-felipe         | San Felipe                                  | 36°30'56.0"N | 6°16'55.6"W
+parada | vta-san-jose           | San José                                    | 36°30'44.3"N | 6°16'49.0"W
+parada | vta-residencia         | Residencia - Hospital Puerta del Mar        | 36°30'33.0"N | 6°16'42.5"W
+parada | vta-balneario          | Balneario - Glorieta Ana Orantes            | 36°30'23.0"N | 6°16'36.8"W
+parada | vta-estadio            | Estadio                                     | 36°30'08.0"N | 6°16'28.1"W
+parada | vta-telegrafia         | Telegrafía                                  | 36°29'59.2"N | 6°16'23.9"W
+parada | vta-cortadura          | Cortadura                                   | 36°29'49.4"N | 6°16'18.4"W
+parada | vta-complejo-deportivo | Complejo Deportivo                          | 36°29'52.7"N | 6°16'19.2"W
 
 # ---- Línea 1 ----
 linea   | 1 | Plaza España – Cortadura | 555555
 # Sentido 0: Cortadura -> Plaza España
-sentido | 1 | 0 | cortadura telegrafia estadio balneario residencia san-jose san-felipe plaza-asdrubal comisaria avda-andalucia puertas-tierra renfe avda-puerto plaza-espana
-# Sentido 1: Plaza España -> Cortadura (en Avenida del Puerto no hay parada en este sentido)
-sentido | 1 | 1 | plaza-espana renfe puertas-tierra avda-andalucia comisaria plaza-asdrubal san-felipe san-jose residencia balneario estadio telegrafia cortadura
+sentido | 1 | 0 | ida-complejo-deportivo ida-telegrafia ida-estadio ida-balneario ida-residencia ida-san-jose ida-san-felipe ida-plaza-asdrubal ida-comisaria ida-avda-andalucia ida-puertas-tierra ida-renfe ida-avda-puerto ida-plaza-espana
+# Sentido 1: Plaza España -> Cortadura
+sentido | 1 | 1 | vta-plaza-espana vta-avda-puerto vta-puertas-tierra vta-avda-andalucia vta-comisaria vta-plaza-asdrubal vta-san-felipe vta-san-jose vta-residencia vta-balneario vta-estadio vta-telegrafia vta-cortadura vta-complejo-deportivo
