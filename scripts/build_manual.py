@@ -9,6 +9,18 @@ Uso:
 Los km se calculan encadenando la distancia en linea recta entre paradas consecutivas de cada
 sentido. En avenidas rectas queda ~1 % por debajo del trazado real; en tramos con curvas hasta
 ~6-10 %. Por eso el JSON lleva "aprox": true y la app marca esos km como aproximados.
+
+Para un sentido cuyo nombre visible en la app no deba coincidir con su primera/última parada real
+(p. ej. la cabecera de la línea se llama distinto a la primera parada), se puede fijar a mano con
+una fila "cabecera":
+    cabecera | codigo_linea | numero_sentido | Texto a mostrar
+Si no se indica, la app sigue mostrando "primera parada → última parada" como hasta ahora.
+
+Para un tramo concreto donde la linea recta se aleje mucho de la realidad (curvas, rodeos), se
+puede fijar su distancia a mano con una fila "tramo":
+    tramo | id_parada_origen | id_parada_destino | metros
+Esa distancia sustituye al calculo por coordenadas solo para ese par de paradas consecutivas,
+en cualquier sentido en que aparezcan juntas.
 """
 import json, os, re, sys
 from gtfs_lib import hav
@@ -28,7 +40,7 @@ def coord(s):
     return float(s.replace(",", "."))
 
 
-stops, lineas, sentidos, fuente = {}, {}, {}, ""
+stops, lineas, sentidos, tramos_fijos, cabeceras, fuente = {}, {}, {}, {}, {}, ""
 for n, raw in enumerate(open(ENTRADA, encoding="utf-8"), 1):
     linea = raw.split("#", 1)[0].strip()
     if not linea:
@@ -43,6 +55,10 @@ for n, raw in enumerate(open(ENTRADA, encoding="utf-8"), 1):
             lineas[c[1]] = {"code": c[1], "name": c[2], "color": c[3] if len(c) > 3 else "555555", "dirs": {}}
         elif c[0] == "sentido":
             sentidos[(c[1], c[2])] = c[3].split()
+        elif c[0] == "tramo":
+            tramos_fijos[frozenset((c[1], c[2]))] = float(c[3])
+        elif c[0] == "cabecera":
+            cabeceras[(c[1], c[2])] = c[3]
         else:
             raise ValueError("tipo de fila desconocido: " + c[0])
     except (IndexError, ValueError) as e:
@@ -61,15 +77,16 @@ for (cod, num), ids in sorted(sentidos.items()):
     for i in ids:
         _, la, lo = stops[i]
         if prev is not None:
-            salto = hav(prev[0], prev[1], la, lo)
-            if salto > SALTO_MAX_M or salto < SALTO_MIN_M:
+            fijo = tramos_fijos.get(frozenset((prev[2], i)))
+            salto = fijo if fijo is not None else hav(prev[0], prev[1], la, lo)
+            if fijo is None and (salto > SALTO_MAX_M or salto < SALTO_MIN_M):
                 avisos += 1
                 print(f"  !! Linea {cod} sentido {num}: salto de {salto:.0f} m entre '{stops[prev[2]][0]}' y '{stops[i][0]}': revisa las coordenadas")
             acc += salto
         prev = (la, lo, i)
         lista.append([i, round(acc)])
         usadas.add(i)
-    lineas[cod]["dirs"][num] = {"headsign": "", "stops": lista}
+    lineas[cod]["dirs"][num] = {"headsign": cabeceras.get((cod, num), ""), "stops": lista}
     print(f"Linea {cod} sentido {num}: {len(ids):2} paradas | {stops[ids[0]][0]} -> {stops[ids[-1]][0]} | {acc/1000:.2f} km")
 
 out = {

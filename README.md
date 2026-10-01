@@ -97,6 +97,33 @@ avisa con «!!»; en ese caso no uses el resultado sin revisarlo.**
 > Nota: el feed de Renfe dibuja algunos trazados en sentido contrario al del tren que los
 > usa. El script lo detecta solo (prueba ambas orientaciones y se queda con la que encaja).
 
+### Operadores sin GTFS: paradas a mano (urbano de Cádiz, Metro de Madrid)
+
+Los ficheros `manual/urbano-cadiz.txt` y `manual/madrid-metro.txt` listan las paradas con sus
+coordenadas y el orden de cada sentido (el formato está explicado en la cabecera de cada
+fichero). Para añadir o modificar una línea: edita sus paradas y sus filas `sentido`, y ejecuta:
+
+```bash
+python3 scripts/build_manual.py manual/urbano-cadiz.txt data/urbano-cadiz.json
+python3 scripts/build_manual.py manual/madrid-metro.txt data/madrid-metro.json
+```
+
+Los km se calculan encadenando la distancia en línea recta entre paradas consecutivas: en una
+avenida recta queda ~1 % por debajo del trazado real, y en tramos con curvas, hasta ~6-10 %. La
+app los marca como «≈» y el CSV lleva la columna `km_aprox`. (En Google Sheets no hay columna
+de aproximado: se distinguen por la columna `ciudad`.)
+El script avisa con «!!» si dos paradas consecutivas quedan a menos de 40 m o a más de 3 km,
+que casi siempre es una errata en una coordenada.
+
+Dos filas opcionales para casos puntuales:
+- `tramo | id_origen | id_destino | metros` — fija a mano la distancia real entre dos paradas
+  consecutivas concretas, para cuando el autobús rodea una manzana o un polideportivo y la
+  línea recta se queda muy corta (ejemplo: tramo Cortadura–Complejo Deportivo en Cádiz).
+- `cabecera | linea | sentido | Texto` — fija el texto que ve el usuario en el desplegable de
+  sentido, para cuando la cabecera real de la línea no coincide con el nombre de la primera o
+  última parada de ese sentido (ejemplo: la línea 1 de Cádiz se llama «Cortadura», aunque esa
+  parada no sea ni la primera del sentido de ida ni la última del de vuelta).
+
 ## Añadir otro operador
 
 1. Genera su JSON con el script que corresponda y guárdalo en `data/`.

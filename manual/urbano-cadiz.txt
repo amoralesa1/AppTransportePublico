@@ -45,7 +45,14 @@ parada | vta-cortadura          | Cortadura                                   | 
 parada | vta-complejo-deportivo | Complejo Deportivo                          | 36°29'52.7"N | 6°16'19.2"W
 
 # ---- Línea 1 ----
-linea   | 1 | Plaza España – Cortadura | 555555
+linea   | 1 | Cortadura – Plaza España | 555555
+# El autobús recorre 573 m reales entre Cortadura y Complejo Deportivo (cabecera de línea,
+# junto con Plaza España), aunque la línea recta entre sus coordenadas sea mucho menor.
+tramo   | vta-cortadura | vta-complejo-deportivo | 573
+# Nombres de sentido fijados a mano: el texto de la cabecera es "Cortadura", aunque la
+# primera/última parada real de cada sentido sea "Complejo Deportivo".
+cabecera | 1 | 0 | Cortadura → Plaza España
+cabecera | 1 | 1 | Plaza España → Cortadura
 # Sentido 0: Cortadura -> Plaza España
 sentido | 1 | 0 | ida-complejo-deportivo ida-telegrafia ida-estadio ida-balneario ida-residencia ida-san-jose ida-san-felipe ida-plaza-asdrubal ida-comisaria ida-avda-andalucia ida-puertas-tierra ida-renfe ida-avda-puerto ida-plaza-espana
 # Sentido 1: Plaza España -> Cortadura

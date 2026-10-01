@@ -146,11 +146,14 @@ el.linea.addEventListener("change", () => {
   if (!datos || !el.linea.value || manual) return;
   const ruta = datos.routes[el.linea.value];
 
-  // Un sentido por cada dirección del GTFS, etiquetado "Origen → Destino".
+  // Un sentido por cada dirección del GTFS, etiquetado "Origen → Destino" salvo que el propio
+  // operador traiga un headsign fijado a mano (p. ej. cuando la cabecera real de línea no
+  // coincide con el nombre de la primera/última parada).
   const sentidos = Object.keys(ruta.dirs).sort().map((dir) => {
-    const st = ruta.dirs[dir].stops;
-    const ini = datos.stops[st[0][0]][0];
-    const fin = datos.stops[st[st.length - 1][0]][0];
+    const d = ruta.dirs[dir];
+    if (d.headsign) return [dir, d.headsign];
+    const ini = datos.stops[d.stops[0][0]][0];
+    const fin = datos.stops[d.stops[d.stops.length - 1][0]][0];
     return [dir, ini + " → " + fin];
   });
   fillSelect(el.sentido, sentidos, "Selecciona el sentido…");
