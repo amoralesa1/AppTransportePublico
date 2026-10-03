@@ -65,6 +65,9 @@ una fila, hazlo en la propia hoja.
 | Tren → Cercanías de Cádiz (C1, C1a) | `data/cercanias-cadiz.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas C) | ✅ |
 | Tren → Cercanías de Madrid | `data/cercanias-madrid.json` | GTFS de Cercanías de Renfe (núcleo 10T) | ✅ C1–C5, C7–C10; variantes C4a/b y C8a/b |
 | Tren → Rodalies de Catalunya | `data/rodalies-catalunya.json` | GTFS de Cercanías de Renfe (núcleo 51T) | ✅ 19 rutas/variantes, 203 paradas |
+| Autobús → Interurbanos de Madrid | `data/interurbanos-madrid.json` | GTFS del CRTM | ✅ 324 rutas, 6.485 paradas |
+| Autobús → Autobuses urbanos de Madrid | `data/urbano-madrid.json` | GTFS del CRTM | ✅ 108 rutas, 3.032 paradas |
+| Autobús → EMT Madrid | `data/emt-madrid.json` | GTFS de EMT | ✅ 235 rutas, 4.932 paradas |
 | Autobús → Autobús de Cádiz (urbano) | `data/urbano-cadiz.json` | Coordenadas tomadas a mano (`manual/urbano-cadiz.txt`); no hay GTFS público | ✅ línea 1 · km aprox.; líneas 2, 3, 5 y 7 pendientes |
 | Metro → Metro de Madrid | `data/madrid-metro.json` | GTFS del CRTM; la línea 3 se conserva del conjunto manual anterior porque el feed no contiene viajes para ella | ✅ líneas 1–12 y R |
 | Metro → TMB Barcelona | `data/tmb-barcelona-metro.json` | GTFS de TMB, tipos de ruta 1 (metro) y 7 (funicular) | ✅ 10 líneas de metro y funicular FM |
@@ -114,6 +117,18 @@ python3 scripts/build_metro_gtfs.py RUTA_GTFS data/madrid-metro.json
 El script ajusta las paradas a los trazados del GTFS y calcula los km siguiendo la línea. Conserva
 las rutas que ya existan en el JSON cuando el feed no trae viajes para ellas; en el feed recibido,
 la línea 3 no tiene viajes y se mantiene desde los datos manuales anteriores.
+
+### Regenerar autobuses de Madrid
+
+```bash
+# Cada carpeta contiene un GTFS del operador correspondiente:
+python3 scripts/build_madrid_buses.py gtfs_interurbanomadrid data/interurbanos-madrid.json
+python3 scripts/build_madrid_buses.py gtfs_urbanomadrid data/urbano-madrid.json
+python3 scripts/build_madrid_buses.py gtfs_emtmadrid data/emt-madrid.json
+```
+
+El generador usa todas las rutas de autobús del feed y sigue `shapes.txt`. Los sentidos con
+trazado ausente o a más de 300 m de las paradas se marcan como aproximados.
 
 ### Regenerar Metro y autobús de Barcelona (TMB)
 
