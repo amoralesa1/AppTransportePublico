@@ -11,6 +11,7 @@ const CIUDADES = {
     { nombre: "Consorcio Bahía de Cádiz", data: "data/bahia-cadiz.json" },
     { nombre: "TUSSAM Sevilla" },
     { nombre: "EMT Madrid" },
+    { nombre: "TMB Barcelona", data: "data/tmb-barcelona-bus.json" },
     { nombre: "Otro", otro: true },
   ],
   "Tranvía": [
@@ -20,7 +21,7 @@ const CIUDADES = {
   ],
   "Metro": [
     { nombre: "Metro de Madrid", data: "data/madrid-metro.json" },   // líneas 1–12 y R
-    { nombre: "TMB Barcelona" },
+    { nombre: "TMB Barcelona", data: "data/tmb-barcelona-metro.json" },
   ],
   "Tren": [
     { nombre: "Cercanías de Cádiz", data: "data/cercanias-cadiz.json" },

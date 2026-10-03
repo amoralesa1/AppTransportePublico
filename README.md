@@ -66,6 +66,8 @@ una fila, hazlo en la propia hoja.
 | Tren → Cercanías de Madrid | `data/cercanias-madrid.json` | GTFS de Cercanías de Renfe (núcleo 10T) | ✅ C1–C5, C7–C10; variantes C4a/b y C8a/b |
 | Autobús → Autobús de Cádiz (urbano) | `data/urbano-cadiz.json` | Coordenadas tomadas a mano (`manual/urbano-cadiz.txt`); no hay GTFS público | ✅ línea 1 · km aprox.; líneas 2, 3, 5 y 7 pendientes |
 | Metro → Metro de Madrid | `data/madrid-metro.json` | GTFS del CRTM; la línea 3 se conserva del conjunto manual anterior porque el feed no contiene viajes para ella | ✅ líneas 1–12 y R |
+| Metro → TMB Barcelona | `data/tmb-barcelona-metro.json` | GTFS de TMB, tipos de ruta 1 (metro) y 7 (funicular) | ✅ 10 líneas de metro y funicular FM |
+| Autobús → TMB Barcelona | `data/tmb-barcelona-bus.json` | GTFS de TMB, tipo de ruta 3 | ✅ 104 líneas |
 | Resto de operadores | — | Sin datos todavía | km manuales |
 
 Los km se calculan siguiendo el trazado real de la línea cuando el GTFS permite ajustarlo. Los datos manuales o los sentidos con un trazado ambiguo se marcan como aproximados.
@@ -109,6 +111,17 @@ python3 scripts/build_metro_gtfs.py RUTA_GTFS data/madrid-metro.json
 El script ajusta las paradas a los trazados del GTFS y calcula los km siguiendo la línea. Conserva
 las rutas que ya existan en el JSON cuando el feed no trae viajes para ellas; en el feed recibido,
 la línea 3 no tiene viajes y se mantiene desde los datos manuales anteriores.
+
+### Regenerar Metro y autobús de Barcelona (TMB)
+
+```bash
+# Carpeta descomprimida con los ficheros GTFS de TMB:
+python3 scripts/build_barcelona_gtfs.py RUTA_GTFS 1,7 data/tmb-barcelona-metro.json
+python3 scripts/build_barcelona_gtfs.py RUTA_GTFS 3 data/tmb-barcelona-bus.json
+```
+
+El tipo 1 incluye el metro y el tipo 7 el funicular FM; el tipo 3 corresponde a autobuses.
+El generador sigue los trazados de `shapes.txt` y guarda cada variante de sentido con sus paradas.
 
 ### Operadores sin GTFS: paradas a mano (autobús urbano de Cádiz)
 
