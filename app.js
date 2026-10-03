@@ -9,7 +9,7 @@ const CIUDADES = {
   "Autobús": [
     { nombre: "Autobús de Cádiz", data: "data/urbano-cadiz.json" },   // urbano de Cádiz capital (solo línea 1; km aprox.)
     { nombre: "Consorcio Bahía de Cádiz", data: "data/bahia-cadiz.json" },
-    { nombre: "TUSSAM Sevilla" },
+    { nombre: "TUSSAM Sevilla", data: "data/tussam-sevilla.json" },
     { nombre: "Interurbanos de Madrid", data: "data/interurbanos-madrid.json" },
     { nombre: "Autobuses urbanos de Madrid", data: "data/urbano-madrid.json" },
     { nombre: "EMT Madrid", data: "data/emt-madrid.json" },
@@ -18,6 +18,8 @@ const CIUDADES = {
   ],
   "Tranvía": [
     { nombre: "Trambahía", data: "data/trambahia.json" },
+    { nombre: "Metrocentro Sevilla (T1)", data: "data/metrocentro-sevilla.json" },
+    { nombre: "Metro Ligero de Madrid", data: "data/metro-ligero-madrid.json" },
     { nombre: "Metropolitano de Granada" },
     { nombre: "Otro", otro: true },
   ],

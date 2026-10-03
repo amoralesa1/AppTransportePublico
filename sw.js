@@ -1,11 +1,11 @@
 // Service worker: cachea la app y los datos para que funcione sin conexion.
 // Al cambiar cualquier archivo, sube el numero de VERSION para forzar la actualizacion.
-const VERSION = "v18";
+const VERSION = "v19";
 const CACHE = "trayectos-" + VERSION;
 const ARCHIVOS = [
   "./", "index.html", "app.js", "manifest.json",
   "icon-192.png", "icon-512.png",
-  "data/bahia-cadiz.json", "data/trambahia.json", "data/cercanias-cadiz.json", "data/urbano-cadiz.json", "data/madrid-metro.json", "data/cercanias-madrid.json", "data/tmb-barcelona-metro.json", "data/tmb-barcelona-bus.json", "data/rodalies-catalunya.json", "data/interurbanos-madrid.json", "data/urbano-madrid.json", "data/emt-madrid.json",
+  "data/bahia-cadiz.json", "data/trambahia.json", "data/cercanias-cadiz.json", "data/urbano-cadiz.json", "data/madrid-metro.json", "data/cercanias-madrid.json", "data/tmb-barcelona-metro.json", "data/tmb-barcelona-bus.json", "data/rodalies-catalunya.json", "data/interurbanos-madrid.json", "data/urbano-madrid.json", "data/emt-madrid.json", "data/tussam-sevilla.json", "data/metrocentro-sevilla.json", "data/metro-ligero-madrid.json",
 ];
 
 self.addEventListener("install", (e) => {
