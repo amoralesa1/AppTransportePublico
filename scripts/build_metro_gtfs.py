@@ -137,5 +137,5 @@ if os.path.isfile(BASE):
 os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
 with open(OUT, "w", encoding="utf-8") as f:
     json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-print(f"OK → {OUT} ({os.path.getsize(OUT) / 1024:.1f} KB) | {len(out_routes)} líneas, {len(used_stops)} paradas")
+print(f"OK → {OUT} ({os.path.getsize(OUT) / 1024:.1f} KB) | {len(out['routes'])} líneas, {len(used_stops)} paradas")
 
