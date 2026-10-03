@@ -3,7 +3,7 @@
 /* ---------- Configuración ---------- */
 
 // Opciones de ciudad/operador por tipo de transporte.
-// "data" apunta al JSON generado con scripts/build_gtfs.py o scripts/build_renfe.py.
+// "data" apunta al JSON generado con scripts/build_gtfs.py, build_renfe.py o build_metro_gtfs.py.
 // Sin "data" => de momento el trayecto se registra sin línea/paradas y con km manuales.
 const CIUDADES = {
   "Autobús": [
@@ -19,7 +19,7 @@ const CIUDADES = {
     { nombre: "Otro", otro: true },
   ],
   "Metro": [
-    { nombre: "Metro de Madrid", data: "data/madrid-metro.json" },   // líneas 1, 3, 4, 6, 8 y 10
+    { nombre: "Metro de Madrid", data: "data/madrid-metro.json" },   // líneas 1–12 y R
     { nombre: "TMB Barcelona" },
   ],
   "Tren": [
