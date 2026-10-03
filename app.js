@@ -24,7 +24,7 @@ const CIUDADES = {
   ],
   "Tren": [
     { nombre: "Cercanías de Cádiz", data: "data/cercanias-cadiz.json" },
-    { nombre: "Cercanías de Madrid" },
+    { nombre: "Cercanías de Madrid", data: "data/cercanias-madrid.json" },
     { nombre: "Rodalies de Catalunya" },
     { nombre: "Otro", otro: true },
   ],
