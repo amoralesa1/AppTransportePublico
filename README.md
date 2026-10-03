@@ -64,10 +64,10 @@ una fila, hazlo en la propia hoja.
 | Tranvía → Trambahía (T1) | `data/trambahia.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas T) | ✅ |
 | Tren → Cercanías de Cádiz (C1, C1a) | `data/cercanias-cadiz.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas C) | ✅ |
 | Autobús → Autobús de Cádiz (urbano) | `data/urbano-cadiz.json` | Coordenadas tomadas a mano (`manual/urbano-cadiz.txt`); no hay GTFS público | ✅ línea 1 · km aprox.; líneas 2, 3, 5 y 7 pendientes |
-| Metro → Metro de Madrid | `data/madrid-metro.json` | Coordenadas tomadas de Wikipedia (`manual/madrid-metro.txt`); no hay GTFS público | ✅ líneas 1, 3, 4, 6, 8 y 10 · km aprox. |
+| Metro → Metro de Madrid | `data/madrid-metro.json` | GTFS del CRTM; la línea 3 se conserva del conjunto manual anterior porque el feed no contiene viajes para ella | ✅ líneas 1–12 y R |
 | Resto de operadores | — | Sin datos todavía | km manuales |
 
-Los km se calculan siguiendo el trazado real de la línea (no en línea recta).
+Los km se calculan siguiendo el trazado real de la línea cuando el GTFS permite ajustarlo. Los datos manuales o los sentidos con un trazado ambiguo se marcan como aproximados.
 
 ### Regenerar Consorcio Bahía de Cádiz
 
@@ -97,15 +97,25 @@ avisa con «!!»; en ese caso no uses el resultado sin revisarlo.**
 > Nota: el feed de Renfe dibuja algunos trazados en sentido contrario al del tren que los
 > usa. El script lo detecta solo (prueba ambas orientaciones y se queda con la que encaja).
 
-### Operadores sin GTFS: paradas a mano (urbano de Cádiz, Metro de Madrid)
+### Regenerar Metro de Madrid
 
-Los ficheros `manual/urbano-cadiz.txt` y `manual/madrid-metro.txt` listan las paradas con sus
-coordenadas y el orden de cada sentido (el formato está explicado en la cabecera de cada
-fichero). Para añadir o modificar una línea: edita sus paradas y sus filas `sentido`, y ejecuta:
+```bash
+# Carpeta descomprimida con routes, trips, stop_times, stops y shapes:
+python3 scripts/build_metro_gtfs.py RUTA_GTFS data/madrid-metro.json
+```
+
+El script ajusta las paradas a los trazados del GTFS y calcula los km siguiendo la línea. Conserva
+las rutas que ya existan en el JSON cuando el feed no trae viajes para ellas; en el feed recibido,
+la línea 3 no tiene viajes y se mantiene desde los datos manuales anteriores.
+
+### Operadores sin GTFS: paradas a mano (autobús urbano de Cádiz)
+
+`manual/urbano-cadiz.txt` lista las paradas con sus coordenadas y el orden de cada sentido
+(el formato está explicado en la cabecera del fichero). Para añadir o modificar una línea:
+edita sus paradas y sus filas `sentido`, y ejecuta:
 
 ```bash
 python3 scripts/build_manual.py manual/urbano-cadiz.txt data/urbano-cadiz.json
-python3 scripts/build_manual.py manual/madrid-metro.txt data/madrid-metro.json
 ```
 
 Los km se calculan encadenando la distancia en línea recta entre paradas consecutivas: en una

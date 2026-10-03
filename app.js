@@ -3,7 +3,7 @@
 /* ---------- Configuración ---------- */
 
 // Opciones de ciudad/operador por tipo de transporte.
-// "data" apunta al JSON generado con scripts/build_gtfs.py o scripts/build_renfe.py.
+// "data" apunta al JSON generado con scripts/build_gtfs.py, build_renfe.py o build_metro_gtfs.py.
 // Sin "data" => de momento el trayecto se registra sin línea/paradas y con km manuales.
 const CIUDADES = {
   "Autobús": [
@@ -19,7 +19,7 @@ const CIUDADES = {
     { nombre: "Otro", otro: true },
   ],
   "Metro": [
-    { nombre: "Metro de Madrid", data: "data/madrid-metro.json" },   // líneas 1, 3, 4, 6, 8 y 10
+    { nombre: "Metro de Madrid", data: "data/madrid-metro.json" },   // líneas 1–12 y R
     { nombre: "TMB Barcelona" },
   ],
   "Tren": [
@@ -174,10 +174,17 @@ el.sentido.addEventListener("change", () => {
 // Metros a lo largo del trazado entre origen y destino dentro del sentido elegido.
 // El destino debe ir DESPUÉS del origen en ese sentido.
 function calcularKm(rutaId, dir, origen, destino) {
-  const lista = datos.routes[rutaId].dirs[dir].stops;
+  const ruta = datos.routes[rutaId];
+  const lista = ruta.dirs[dir].stops;
   const i = lista.findIndex(([s]) => s === origen);
-  const j = lista.findIndex(([s]) => s === destino);
-  if (i < 0 || j < 0 || j <= i) return null;
+  const j = origen === destino && ruta.circular
+    ? lista.map(([s]) => s).lastIndexOf(destino)
+    : lista.findIndex(([s]) => s === destino);
+  if (i < 0 || j < 0) return null;
+  const total = lista[lista.length - 1][1] - lista[0][1];
+  if (origen === destino && ruta.circular && j === i) return total / 1000;
+  if (j < i && ruta.circular) return (total - lista[i][1] + lista[j][1]) / 1000;
+  if (j <= i) return null;
   return (lista[j][1] - lista[i][1]) / 1000;
 }
 
@@ -187,7 +194,7 @@ function actualizarKm() {
   mostrarError("");
   if (!datos || !el.linea.value || el.sentido.value === "" || !el.origen.value || !el.destino.value) return;
 
-  if (el.origen.value === el.destino.value) {
+  if (el.origen.value === el.destino.value && !datos.routes[el.linea.value].circular) {
     mostrarError("El origen y el destino son la misma parada.");
     return;
   }
@@ -197,9 +204,10 @@ function actualizarKm() {
     return;
   }
   kmActual = km;
-  el.kmTexto.textContent = (datos.aprox ? "≈ " : "") + km.toFixed(1).replace(".", ",") + " km";
-  el.kmNota.textContent = datos.aprox
-    ? "aproximado: suma de rectas entre paradas (algo menos que el recorrido real)"
+  const aprox = datos.aprox || !!datos.routes[el.linea.value].dirs[el.sentido.value].aprox;
+  el.kmTexto.textContent = (aprox ? "≈ " : "") + km.toFixed(1).replace(".", ",") + " km";
+  el.kmNota.textContent = aprox
+    ? "aproximado: suma de distancias entre paradas"
     : "siguiendo el trazado de la línea";
   el.resultado.hidden = false;
 }
@@ -239,10 +247,11 @@ el.form.addEventListener("submit", (ev) => {
     lineaCodigo: ruta ? ruta.code : (esOtra ? el.lineaOtra.value.trim() : ""),
     lineaNombre: ruta ? ruta.name : "",
     color: ruta ? "#" + ruta.color : "",
+    colorTexto: ruta ? "#" + (ruta.textColor || "FFFFFF") : "",
     origen: ruta && el.origen.value ? datos.stops[el.origen.value][0] : "",
     destino: ruta && el.destino.value ? datos.stops[el.destino.value][0] : "",
     km: km === null ? null : Math.round(km * 10) / 10,
-    aprox: !!(ruta && datos.aprox),
+    aprox: !!(ruta && (datos.aprox || datos.routes[el.linea.value].dirs[el.sentido.value].aprox)),
     espera: parseInt(el.espera.value, 10) || 0,
     trayecto: parseInt(el.trayecto.value, 10) || 0,
   };
@@ -400,7 +409,7 @@ function render() {
   el.historial.innerHTML = lista.map((t) => {
     const fecha = new Date(t.fecha + "T00:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
     const badge = t.lineaCodigo
-      ? `<span class="badge" style="background:${escapeHtml(t.color || "#0b5fff")}">${escapeHtml(t.lineaCodigo)}</span>` : "";
+      ? `<span class="badge" style="background:${escapeHtml(t.color || "#0b5fff")};color:${escapeHtml(t.colorTexto || "#fff")}">${escapeHtml(t.lineaCodigo)}</span>` : "";
     const ruta = t.origen ? `${escapeHtml(t.origen)} → ${escapeHtml(t.destino)}` : escapeHtml(t.tipo);
     const kmTxt = t.km === null ? "km sin indicar" : (t.aprox ? "≈ " : "") + t.km.toFixed(1).replace(".", ",") + " km";
     const marca = t.sync === true ? ' · <span class="ok">✓ en Sheets</span>'
