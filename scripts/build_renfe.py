@@ -15,12 +15,12 @@ Ejemplos:
     python3 scripts/build_renfe.py fomento_transit.zip 31T C data/cercanias-cadiz.json
     python3 scripts/build_renfe.py fomento_transit.zip 31T T data/trambahia.json
 
-Notas sobre el formato de Renfe: no trae direction_id (cada sentido es una ruta distinta) y cada
-sentido tiene su propio trazado (p. ej. 31_T1 y 31_T1_INV). Por eso el sentido se identifica por el
-shape_id. OJO: el trazado no siempre esta dibujado en el mismo sentido que el tren que lo usa (31_T1
-va de Pelagatos a Cadiz y lo usa el servicio Cadiz -> Pelagatos), asi que se prueba el trazado en
-ambas orientaciones y se elige la que encaja con las paradas. Los ficheros vienen con espacios de
-relleno; la libreria los recorta.
+Notas sobre el formato de Renfe: no trae direction_id; normalmente cada sentido tiene un shape_id
+distinto, pero algunos servicios reutilizan el mismo shape_id. Se agrupan por línea, trazado y
+route_id para conservar esos sentidos y variantes. El trazado no siempre está dibujado en el mismo
+sentido que el tren que lo usa, así que se prueban ambas orientaciones. Si alguna parada queda a más
+de 300 m del trazado, el sentido se guarda con distancias entre paradas y la app lo marca como
+aproximado. Los ficheros vienen con espacios de relleno; la librería los recorta.
 """
 import json, os, re, sys
 from collections import defaultdict
@@ -50,7 +50,7 @@ seqs = {tid: [s for _, s in sorted(l)] for tid, l in seqs.items()}
 grupos = defaultdict(list)
 for tid, t in trips.items():
     if tid in seqs and t["shape_id"]:
-        grupos[(routes[t["route_id"]]["route_short_name"], t["shape_id"])].append(tid)
+        grupos[(routes[t["route_id"]]["route_short_name"], t["shape_id"], t["route_id"])].append(tid)
 mejor = {}
 for k, lista in grupos.items():
     mejor[k] = max(lista, key=lambda tid: len(seqs[tid]))
@@ -69,22 +69,39 @@ for sp in fuente.filas("shapes.txt"):
 print("Calculando distancias...")
 salida_rutas, usadas = {}, set()
 for linea in sorted({k[0] for k in mejor}):
-    shapes = sorted(k[1] for k in mejor if k[0] == linea)      # 31_T1 < 31_T1_INV  ->  sentido 0, 1
+    grupos_linea = sorted(k for k in mejor if k[0] == linea)  # también separa sentidos con shape_id compartido
     # nombre: el de la primera ruta de la linea que tenga viajes
     rid = min(t["route_id"] for t in trips.values() if routes[t["route_id"]]["route_short_name"] == linea)
     r = routes[rid]
     nombre = re.sub(r"\s+-\s*", " – ", re.sub(r"\s+", " ", r["route_long_name"]))
-    entry = {"code": linea, "name": nombre, "color": r["route_color"], "dirs": {}}
-    for i, sid in enumerate(shapes):
-        tid = mejor[(linea, sid)]
+    entry = {"code": linea, "name": nombre, "color": r["route_color"] or "555555",
+             "textColor": r.get("route_text_color") or "FFFFFF", "dirs": {}}
+    secuencias_vistas = set()
+    for i, clave in enumerate(grupos_linea):
+        sid = clave[1]
+        tid = mejor[clave]
         seq = [s for s in seqs[tid] if s in stops_all]
+        if len(seq) < 2:
+            print(f"  Aviso: se omite {linea} {sid}; el viaje solo tiene una parada")
+            continue
+        patron = tuple(seq)
+        if patron in secuencias_vistas:
+            continue
+        secuencias_vistas.add(patron)
         pts = [(la, lo) for _, la, lo in sorted(pts_shape[sid])]
         lista, peor = paradas_con_offset(seq, stops_all, pts)
         inv, peor_inv = paradas_con_offset(seq, stops_all, pts[::-1])
         nota = ""
         if peor_inv < peor:          # el trazado esta dibujado al reves respecto a las paradas
             lista, peor, nota = inv, peor_inv, " [trazado invertido]"
-        entry["dirs"][str(i)] = {"headsign": "", "stops": lista}
+        aproximado = peor is not None and peor > 300
+        if aproximado:
+            lista, _ = paradas_con_offset(seq, stops_all, [])
+            nota += " [distancia aproximada]"
+        sentido = {"headsign": "", "stops": lista}
+        if aproximado:
+            sentido["aprox"] = True
+        entry["dirs"][str(i)] = sentido
         usadas.update(seq)
         a, b = stops_all[seq[0]], stops_all[seq[-1]]
         recta = hav(float(a["stop_lat"]), float(a["stop_lon"]), float(b["stop_lat"]), float(b["stop_lon"]))
@@ -92,7 +109,7 @@ for linea in sorted({k[0] for k in mejor}):
         print(f"  {linea:4} sentido {i}: {len(seq):2} paradas | {a['stop_name']} -> {b['stop_name']} | "
               f"{km:5.1f} km (recta {recta/1000:4.1f}) | parada mas lejos del trazado: {('%.0f m' % peor) if peor is not None else 'sin trazado'}{nota}")
         if peor is not None and peor > 300:
-            print(f"    !! Aviso: alguna parada queda a mas de 300 m del trazado; revisa esta linea antes de usarla.")
+            print("    !! Ajuste geométrico ambiguo; este sentido se guarda con distancias aproximadas entre paradas.")
     salida_rutas[linea] = entry
 
 out = {
@@ -105,3 +122,4 @@ os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
 with open(OUT, "w", encoding="utf-8") as f:
     json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
 print(f"OK -> {OUT} ({os.path.getsize(OUT)/1024:.0f} KB) | {len(salida_rutas)} lineas, {len(usadas)} paradas")
+
