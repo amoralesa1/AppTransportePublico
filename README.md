@@ -64,6 +64,7 @@ una fila, hazlo en la propia hoja.
 | Tranvía → Trambahía (T1) | `data/trambahia.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas T) | ✅ |
 | Tren → Cercanías de Cádiz (C1, C1a) | `data/cercanias-cadiz.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas C) | ✅ |
 | Tren → Cercanías de Madrid | `data/cercanias-madrid.json` | GTFS de Cercanías de Renfe (núcleo 10T) | ✅ C1–C5, C7–C10; variantes C4a/b y C8a/b |
+| Tren → Rodalies de Catalunya | `data/rodalies-catalunya.json` | GTFS de Cercanías de Renfe (núcleo 51T) | ✅ 19 rutas/variantes, 203 paradas |
 | Autobús → Autobús de Cádiz (urbano) | `data/urbano-cadiz.json` | Coordenadas tomadas a mano (`manual/urbano-cadiz.txt`); no hay GTFS público | ✅ línea 1 · km aprox.; líneas 2, 3, 5 y 7 pendientes |
 | Metro → Metro de Madrid | `data/madrid-metro.json` | GTFS del CRTM; la línea 3 se conserva del conjunto manual anterior porque el feed no contiene viajes para ella | ✅ líneas 1–12 y R |
 | Metro → TMB Barcelona | `data/tmb-barcelona-metro.json` | GTFS de TMB, tipos de ruta 1 (metro) y 7 (funicular) | ✅ 10 líneas de metro y funicular FM |
@@ -90,10 +91,12 @@ python3 scripts/build_gtfs.py RUTA_GTFS 2_ data/bahia-cadiz.json
 python3 scripts/build_renfe.py fomento_transit.zip 31T C data/cercanias-cadiz.json
 python3 scripts/build_renfe.py fomento_transit.zip 31T T data/trambahia.json
 python3 scripts/build_renfe.py fomento_transit.zip 10T C data/cercanias-madrid.json
+python3 scripts/build_renfe.py fomento_transit 51T R data/rodalies-catalunya.json
 ```
 
-`31T` es el núcleo de Cádiz y la última letra filtra por tipo (`C` cercanías, `T` tranvía).
-Otros núcleos de Renfe se generan igual cambiando el prefijo (por ejemplo `10T` Madrid).
+`31T` es el núcleo de Cádiz, `10T` el de Madrid y `51T` el de Cataluña. La última letra filtra
+por tipo: `C` para Cercanías o `R` para las rutas Rodalies de Cataluña (el GTFS `51T` usa códigos
+R, RG, RL y RT). Otros núcleos se generan igual cambiando el prefijo.
 El script puede tardar alrededor de un minuto porque el zip contiene un `stop_times.txt` muy
 voluminoso. Si una parada queda a más de 300 m del trazado, usa distancias entre paradas y marca
 ese sentido como aproximado en la app.
