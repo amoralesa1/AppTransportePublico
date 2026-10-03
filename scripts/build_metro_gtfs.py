@@ -86,7 +86,7 @@ for line in sorted({line for line, _ in best}, key=lambda x: (not x.isdigit(), i
         print(f"{line:>2} sentido {direction}: {len(sequence)} paradas | {origin['stop_name']} → {destination['stop_name']} | "
               f"{(result[-1][1] - result[0][1]) / 1000:.1f} km | separación máx. {worst:.0f} m")
         if worst > 300:
-            print("  !! Revisa: hay una parada a más de 300 m del trazado")
+            print("  !! Ajuste geométrico ambiguo; se comprobará si encaja con el sentido opuesto")
 
     # Una circular puede cruzarse consigo misma y hacer fallar el ajuste de un sentido.
     # Si el sentido opuesto sí encaja, invertir sus distancias conserva el trazado completo.
