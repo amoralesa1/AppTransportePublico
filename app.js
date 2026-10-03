@@ -181,10 +181,9 @@ function calcularKm(rutaId, dir, origen, destino) {
     ? lista.map(([s]) => s).lastIndexOf(destino)
     : lista.findIndex(([s]) => s === destino);
   if (i < 0 || j < 0) return null;
-  if (j < i && ruta.circular) {
-    const total = lista[lista.length - 1][1] - lista[0][1];
-    return (total - lista[i][1] + lista[j][1]) / 1000;
-  }
+  const total = lista[lista.length - 1][1] - lista[0][1];
+  if (origen === destino && ruta.circular && j === i) return total / 1000;
+  if (j < i && ruta.circular) return (total - lista[i][1] + lista[j][1]) / 1000;
   if (j <= i) return null;
   return (lista[j][1] - lista[i][1]) / 1000;
 }
