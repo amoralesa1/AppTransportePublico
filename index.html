@@ -37,6 +37,17 @@
   }
   select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236e6e73' stroke-width='2'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 2px center; padding-right: 22px; }
+  .transport-field { min-width: 0; width: 100%; margin: 0; padding: 12px 0; border: 0; border-bottom: 1px solid var(--line); }
+  .transport-field legend { padding: 0; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+  .transport-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .transport-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    min-width: 0; min-height: 78px; padding: 8px 2px; border: 1px solid var(--line); border-radius: 12px;
+    background: transparent; color: var(--muted); cursor: pointer; touch-action: manipulation; }
+  .transport-option svg { width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .transport-name { color: inherit; font-size: 10px; line-height: 1.15; text-align: center; }
+  .transport-option[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--card)); color: var(--accent); }
+  .transport-option:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   [hidden] { display: none !important; }
   select:disabled, input:disabled { opacity: .4; }
   .row { display: flex; gap: 16px; }
@@ -76,13 +87,32 @@
   <form id="form" class="card" autocomplete="off">
     <label><span>Fecha</span><input type="date" id="fecha" required></label>
 
-    <label><span>Tipo de transporte</span>
-      <select id="tipo" required>
-        <option value="">Selecciona…</option>
-        <option>Autobús</option><option>Tren</option><option>Tranvía</option>
-        <option>Metro</option><option>Otro</option>
-      </select>
-    </label>
+    <fieldset class="transport-field">
+      <legend>Tipo de transporte</legend>
+      <input type="hidden" id="tipo">
+      <div class="transport-grid" id="tipoOpciones" role="group" aria-label="Tipo de transporte">
+        <button class="transport-option" type="button" data-tipo="Autobús" aria-label="Autobús" aria-pressed="false">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 29V15c0-4 3-7 7-7h18c4 0 7 3 7 7v14M8 16h32M14 11v8m10-8v8m10-8v8M8 27h32M12 29v5m24-5v5"/><circle cx="15" cy="35" r="3"/><circle cx="33" cy="35" r="3"/></svg>
+          <span class="transport-name">Autobús</span>
+        </button>
+        <button class="transport-option" type="button" data-tipo="Tranvía" aria-label="Tranvía" aria-pressed="false">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 8h10m-5 0V4m-8 5-4 6h24l-4-6m-20 7h24v18H12zm5 18v4m14-4v4M8 43l8-10m24 10-8-10M12 21h24m-18 6h.1m12 0h.1"/></svg>
+          <span class="transport-name">Tranvía</span>
+        </button>
+        <button class="transport-option" type="button" data-tipo="Metro" aria-label="Metro" aria-pressed="false">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 34V18c0-7 5-11 13-11s13 4 13 11v16M14 18h20M17 34v-8m14 8v-8M8 42l5-8m27 8-5-8M17 18v-3m14 3v-3"/></svg>
+          <span class="transport-name">Metro</span>
+        </button>
+        <button class="transport-option" type="button" data-tipo="Tren" aria-label="Tren" aria-pressed="false">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 33V18l5-9h10l5 9v15zm2-15h16m-12 15v5m8-5v5M9 43l7-10m23 10-7-10M20 25h.1m8 0h.1M19 9V6h10v3"/></svg>
+          <span class="transport-name">Tren</span>
+        </button>
+        <button class="transport-option" type="button" data-tipo="Otro" aria-label="Otro transporte" aria-pressed="false">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M16 24h.1m8 0h.1m8 0h.1"/></svg>
+          <span class="transport-name">Otro</span>
+        </button>
+      </div>
+    </fieldset>
 
     <label><span>Ciudad / operador</span>
       <select id="ciudad" required disabled><option value="">Selecciona el tipo primero</option></select>

@@ -45,7 +45,7 @@ const OTRA = "__otra__";     // opción «Otra línea (km a mano)» de los despl
 
 const $ = (id) => document.getElementById(id);
 const el = {
-  fecha: $("fecha"), tipo: $("tipo"), ciudad: $("ciudad"), linea: $("linea"),
+  fecha: $("fecha"), tipo: $("tipo"), tipoOpciones: $("tipoOpciones"), ciudad: $("ciudad"), linea: $("linea"),
   sentido: $("sentido"), origen: $("origen"), destino: $("destino"), espera: $("espera"), trayecto: $("trayecto"),
   otroTexto: $("otroTexto"), kmManual: $("kmManual"),
   wrapOtro: $("wrapOtro"), wrapLinea: $("wrapLinea"), wrapSentido: $("wrapSentido"), wrapOrigen: $("wrapOrigen"),
@@ -107,7 +107,21 @@ function resetDesde(nivel) {
   mostrarError("");
 }
 
+function actualizarTipoVisual() {
+  el.tipoOpciones.querySelectorAll("[data-tipo]").forEach((boton) => {
+    boton.setAttribute("aria-pressed", String(boton.dataset.tipo === el.tipo.value));
+  });
+}
+
+el.tipoOpciones.addEventListener("click", (ev) => {
+  const boton = ev.target.closest("button[data-tipo]");
+  if (!boton) return;
+  el.tipo.value = boton.dataset.tipo;
+  el.tipo.dispatchEvent(new Event("change", { bubbles: true }));
+});
+
 el.tipo.addEventListener("change", () => {
+  actualizarTipoVisual();
   resetDesde(1);
   const opciones = CIUDADES[el.tipo.value] || [];
   fillSelect(el.ciudad, opciones.map((c) => [c.nombre, c.nombre]), "Selecciona…");
@@ -227,6 +241,7 @@ const escribir = (v) => localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
 el.form.addEventListener("submit", (ev) => {
   ev.preventDefault();
   mostrarError("");
+  if (!el.tipo.value) return mostrarError("Selecciona el tipo de transporte.");
 
   const cfg = (CIUDADES[el.tipo.value] || []).find((c) => c.nombre === el.ciudad.value);
   let km = kmActual;
@@ -266,7 +281,7 @@ el.form.addEventListener("submit", (ev) => {
   escribir(lista);
 
   // Limpia lo específico del trayecto; conserva la fecha.
-  el.tipo.value = ""; resetDesde(1);
+  el.tipo.value = ""; actualizarTipoVisual(); resetDesde(1);
   el.espera.value = ""; el.trayecto.value = "";
   render();
   sincronizar();
