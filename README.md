@@ -65,6 +65,7 @@ una fila, hazlo en la propia hoja.
 | Tranvía → Trambahía (T1) | `data/trambahia.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas T) | ✅ |
 | Tranvía → Metrocentro Sevilla (T1) | `data/metrocentro-sevilla.json` | GTFS TUSSAM, tipo de ruta 0 | ✅ 1 línea, distancia aproximada (el feed no incluye `shapes.txt`) |
 | Tranvía → Metro Ligero de Madrid | `data/metro-ligero-madrid.json` | GTFS del CRTM, tipo de ruta 0 | ✅ ML1–ML4; ML4 incluye un sentido aproximado |
+| Tranvía → Metropolitano de Granada | `data/metro-granada.json` | GTFS oficial del Metro de Granada, tipo de ruta 0 | ✅ línea 1, 26 paradas |
 | Tren → Cercanías de Cádiz (C1, C1a) | `data/cercanias-cadiz.json` | GTFS de Cercanías de Renfe (núcleo 31, líneas C) | ✅ |
 | Tren → Cercanías de Madrid | `data/cercanias-madrid.json` | GTFS de Cercanías de Renfe (núcleo 10T) | ✅ C1–C5, C7–C10; variantes C4a/b y C8a/b |
 | Tren → Rodalies de Catalunya | `data/rodalies-catalunya.json` | GTFS de Cercanías de Renfe (núcleo 51T) | ✅ 19 rutas/variantes, 203 paradas |
@@ -129,6 +130,8 @@ python3 scripts/build_gtfs_routes.py RUTA_GTFS 3 data/tussam-sevilla.json
 python3 scripts/build_gtfs_routes.py RUTA_GTFS 0 data/metrocentro-sevilla.json
 # GTFS CRTM de Metro Ligero (route_type 0):
 python3 scripts/build_gtfs_routes.py RUTA_GTFS 0 data/metro-ligero-madrid.json
+# GTFS del Metropolitano de Granada (route_type 0):
+python3 scripts/build_gtfs_routes.py RUTA_GTFS 0 data/metro-granada.json
 ```
 
 El generador usa `shapes.txt` para seguir la geometría cuando está disponible; si falta, suma
