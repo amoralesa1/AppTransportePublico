@@ -20,7 +20,7 @@ const CIUDADES = {
     { nombre: "Trambahía", data: "data/trambahia.json" },
     { nombre: "Metrocentro Sevilla (T1)", data: "data/metrocentro-sevilla.json" },
     { nombre: "Metro Ligero de Madrid", data: "data/metro-ligero-madrid.json" },
-    { nombre: "Metropolitano de Granada" },
+    { nombre: "Metropolitano de Granada", data: "data/metro-granada.json" },
     { nombre: "Otro", otro: true },
   ],
   "Metro": [
